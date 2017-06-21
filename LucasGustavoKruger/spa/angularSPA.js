@@ -1,23 +1,23 @@
 var app = angular.module('angularSPA', ['ui.router']);
 
-app.controller('mainController', function($scope, $state, manterProduto) {
+app.controller('mainController', function($scope, $state, manterUsuariosServico) {
   $scope.titulo = "Usuários";
 
-  $scope.usuarios = manterProduto.fetchUsuarios();
+  $scope.usuarios = manterUsuariosServico.fetchUsuarios();
 
   $scope.adicionarUsuario = function() {
     $state.go('novoUsuario');
   }
 });
 
-app.controller('novoUsuarioController', function($scope, $state, manterProduto) {
+app.controller('novoUsuarioController', function($scope, $state, manterUsuariosServico) {
 
   $scope.limparCampos = () => {
     $scope.novoUsuario = {}
   }
 
   $scope.salvarNovoUsuario = (usuario) => {
-    manterProduto.adicionaUsuario(usuario);
+    manterUsuariosServico.adicionaUsuario(usuario);
     $state.go('listaUsuarios');
   };
 
@@ -51,7 +51,7 @@ app.config(function($stateProvider, $urlRouterProvider) {
   $stateProvider.state(errorState);
 });
 
-app.service('manterProduto', function() {
+app.service('manterUsuariosServico', function() {
   var actualID = 0;
   var usuarios = [];
 
