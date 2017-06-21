@@ -1,24 +1,27 @@
 var app = angular.module('angularSPA', ['ui.router']);
 
-app.controller('mainController',
-  function($scope, $state) {
-    $scope.titulo = "Usuários";
+app.controller('mainController', function($scope, $state, manterProduto) {
+  $scope.titulo = "Usuários";
 
-    $scope.usuarios = [
-      {
-        _id: '123',
-        username: 'fulado',
-        password: 'senha123',
-        age: 18,
-        email: 'fulano@mail.com'
-      }
-    ];
+  $scope.usuarios = manterProduto.fetchUsuarios();
 
-    $scope.adicionarUsuario = function() {
-      console.log("vou adicionar um novo usuário");
-      $state.go('novoUsuario');
-    }
-  })
+  $scope.adicionarUsuario = function() {
+    $state.go('novoUsuario');
+  }
+});
+
+app.controller('novoUsuarioController', function($scope, $state, manterProduto) {
+
+  $scope.limparCampos = () => {
+    $scope.novoUsuario = {}
+  }
+
+  $scope.salvarNovoUsuario = (usuario) => {
+    manterProduto.adicionaUsuario(usuario);
+    $state.go('listaUsuarios');
+  };
+
+});
 
 app.config(function($stateProvider, $urlRouterProvider) {
   $urlRouterProvider.otherwise('/error');
@@ -26,7 +29,8 @@ app.config(function($stateProvider, $urlRouterProvider) {
   let novoUsuarioState = {
     name: 'novoUsuario',
     url: '/novoUsuario',
-    templateUrl: 'novoUsuario.html'
+    templateUrl: 'novoUsuario.html',
+    controller: 'novoUsuarioController',
   }
 
   let listaUsuariosState = {
@@ -45,4 +49,22 @@ app.config(function($stateProvider, $urlRouterProvider) {
   $stateProvider.state(novoUsuarioState);
   $stateProvider.state(listaUsuariosState);
   $stateProvider.state(errorState);
+});
+
+app.service('manterProduto', function() {
+  var actualID = 0;
+  var usuarios = [];
+
+  return {
+    adicionaUsuario: function(novoUsuario) {
+      novoUsuario._id = ++actualID;
+      usuarios.push(novoUsuario);
+    },
+
+    fetchUsuarios: function() {
+      return usuarios;
+    }
+
+  }
+
 });

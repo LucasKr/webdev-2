@@ -1,0 +1,1 @@
+To run your app you will need to install `http-server`, then run `http-server .` at console.
